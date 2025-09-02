@@ -39,6 +39,22 @@ const Signup = () => {
   // 3️⃣ Complete Signup
   const handleSignup = async (e) => {
     e.preventDefault();
+    // Frontend validation
+    if (!firstName || !lastName || !role || !email || !password || !otp) {
+      alert("Please fill all required fields.");
+      return;
+    }
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+    // Password strength validation (min 6 chars, at least one number)
+    if (password.length < 6 || !/\d/.test(password)) {
+      alert("Password must be at least 6 characters and contain a number.");
+      return;
+    }
     try {
       await axios.post("http://localhost:3000/api/v1/signup", {
         firstName,

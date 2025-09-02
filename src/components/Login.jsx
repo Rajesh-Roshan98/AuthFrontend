@@ -14,8 +14,20 @@ const Login = () => {
     async function loginHandler(e) {
         e.preventDefault();
         setError("");
+        // Frontend validation
         if (!email || !password) {
             setError("Please enter both email and password.");
+            return;
+        }
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
+        // Password length validation
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters.");
             return;
         }
         try {
