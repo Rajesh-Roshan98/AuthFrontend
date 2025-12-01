@@ -5,7 +5,7 @@ import { Mail, Lock, User, Hash, Eye, EyeOff } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 
 // Load Backend URL from .env
-const API_BASE = import.meta.env.VITE_BACKEND_URL;
+const API_BASE = import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, "");
 
 const Signup = () => {
   const [step, setStep] = useState(1);
