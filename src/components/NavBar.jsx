@@ -1,73 +1,94 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import Logout from './Logout';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
-const Navbar = ({ setFormType }) => {
+const Navbar = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [loggingOut, setLoggingOut] = useState(false);
 
+  // Listen for token changes or custom login event
   useEffect(() => {
-    const checkToken = () => setIsLoggedIn(!!localStorage.getItem("token"));
-    window.addEventListener("storage", checkToken);
-    checkToken(); // check immediately
-    return () => window.removeEventListener("storage", checkToken);
-  });
+    const updateLogin = () => setIsLoggedIn(!!localStorage.getItem("token"));
 
-  const handleLogin = () => {
-    setFormType("Login");
-    navigate("/Login");
-  };
+    window.addEventListener("storage", updateLogin); // For other tabs
+    window.addEventListener("login", updateLogin);   // Custom login event
 
-  const handleSignup = () => {
-    setFormType("Signup");
-    navigate("/Signup");
+    updateLogin(); // check immediately on mount
+
+    return () => {
+      window.removeEventListener("storage", updateLogin);
+      window.removeEventListener("login", updateLogin);
+    };
+  }, []);
+
+  const handleLogin = () => navigate("/login");
+  const handleSignup = () => navigate("/signup");
+
+  const handleLogout = () => {
+    setLoggingOut(true);
+
+    setTimeout(() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("authUser");
+      console.clear();
+      setIsLoggedIn(false);
+      navigate("/");
+      setLoggingOut(false);
+    }, 500);
   };
 
   return (
-  <nav className="bg-gradient-to-r from-gray-900 to-gray-800 shadow-md h-16 w-full flex justify-between items-center px-6 sticky top-0 z-50 overflow-hidden">
-      {/* Left - Logo / Brand */}
-      <div className="text-2xl font-bold text-white tracking-wide cursor-pointer">
-        <Link to="/HomePage">AuthApp</Link>
-      </div>
+    <>
+      {/* Global Spinner Overlay */}
+      {loggingOut && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
 
-      {/* Middle - Links */}
-      <ul className="hidden md:flex gap-6 text-gray-300 font-medium">
-        <li>
-          <Link to="/HomePage" className="hover:text-white transition-colors">Home</Link>
-        </li>
-        <li>
-          <Link to="/products" className="hover:text-white transition-colors">Products</Link>
-        </li>
-        <li>
-          <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
-        </li>
-        <li>
-          <Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link>
-        </li>
-      </ul>
+      <nav className="bg-white shadow-md h-16 w-full flex justify-between items-center px-6 sticky top-0 z-50">
+        {/* Left - Logo */}
+        <div className="text-2xl font-bold text-indigo-700 tracking-wide cursor-pointer">
+          <Link to="/">AuthApp</Link>
+        </div>
 
-      {/* Right - Auth buttons */}
-      <div className="flex gap-3">
-        {isLoggedIn ? (
-          <Logout />
-        ) : (
-          <>
+        {/* Middle - Links */}
+        <ul className="hidden md:flex gap-6 text-gray-700 font-medium">
+          <li><Link to="/" className="hover:text-indigo-600 transition-colors">Home</Link></li>
+          <li><Link to="/products" className="hover:text-indigo-600 transition-colors">Products</Link></li>
+          <li><Link to="/about" className="hover:text-indigo-600 transition-colors">About</Link></li>
+          <li><Link to="/contact" className="hover:text-indigo-600 transition-colors">Contact</Link></li>
+        </ul>
+
+        {/* Right - Auth Buttons / Logout */}
+        <div className="flex gap-3">
+          {isLoggedIn ? (
             <button
-              onClick={handleLogin}
-              className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5"
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-1.5 rounded-full shadow-md flex items-center justify-center hover:scale-105 transition-transform duration-200"
+              disabled={loggingOut}
             >
-              Login
+              Logout
             </button>
-            <button
-              onClick={handleSignup}
-              className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5"
-            >
-              Signup
-            </button>
-          </>
-        )}
-      </div>
-    </nav>
+          ) : (
+            <>
+              <button
+                onClick={handleLogin}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-1.5 rounded-full shadow-md transition transform hover:scale-105"
+              >
+                Login
+              </button>
+              <button
+                onClick={handleSignup}
+                className="bg-pink-500 hover:bg-pink-600 text-white font-semibold px-4 py-1.5 rounded-full shadow-md transition transform hover:scale-105"
+              >
+                Signup
+              </button>
+            </>
+          )}
+        </div>
+      </nav>
+    </>
   );
 };
 

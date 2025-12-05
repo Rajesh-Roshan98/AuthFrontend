@@ -1,58 +1,62 @@
 import React, { useEffect } from "react";
-import Login from "../components/Login";
-import Signup from "../components/Signup";
 import { useNavigate } from "react-router-dom";
 
-const LandingPage = ({ formType, setFormType }) => {
+const LandingPage = () => {
   const navigate = useNavigate();
 
+  // Redirect logged-in users to home
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/HomePage");
+      navigate("/home");
     }
   }, [navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-600 to-indigo-800 px-4">
-      <div className="bg-white bg-opacity-95 rounded-2xl shadow-lg p-8 max-w-lg w-full text-center">
-        {formType === "Login" ? (
-          <Login />
-        ) : formType === "Signup" ? (
-          <Signup setFormType={setFormType} />
-        ) : (
-          <>
-            <h1 className="text-3xl font-bold text-indigo-700 mb-4">
-              Welcome to AuthApp 🎉
-            </h1>
-            <p className="text-lg text-gray-700 mb-6">
-              This is your authentication landing page.  
-              You can <span className="font-semibold text-indigo-600">Signup</span> 
-              to create an account or <span className="font-semibold text-indigo-600">Login</span> 
-              if you already have one.
-            </p>
+    <div className="flex items-center justify-center min-h-screen bg-white px-4">
+      <div className="w-full max-w-2xl p-10 bg-white rounded-2xl shadow-2xl text-center">
+        {/* Welcome Header */}
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          Welcome to AuthApp 🚀
+        </h1>
 
-            <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-5 mb-6 text-left">
-              <h2 className="text-lg font-semibold text-indigo-600 mb-3">
-                🔑 How It Works
-              </h2>
-              <ul className="list-disc list-inside text-gray-600 space-y-2">
-                <li>
-                  <span className="font-medium">Signup:</span> Register with
-                  email & password.
-                </li>
-                <li>
-                  <span className="font-medium">Login:</span> Get access with
-                  secure credentials.
-                </li>
-                <li>
-                  <span className="font-medium">Session:</span> A token keeps
-                  you logged in until logout.
-                </li>
-              </ul>
-            </div>
-          </>
-        )}
+        <p className="text-gray-600 text-lg mb-6">
+          AuthApp is a simple, secure, and modern authentication system.  
+          Login or signup to access protected pages like Home, Products, About, and Contact.
+        </p>
+
+        {/* Authentication Flow */}
+        <div className="bg-gray-50 rounded-xl p-6 mb-6 shadow-sm text-left">
+          <h2 className="text-xl font-semibold text-indigo-600 mb-3">
+            🔐 How Authentication Works
+          </h2>
+
+          <ul className="space-y-3 text-gray-700">
+            <li>
+              <strong>1. Signup:</strong> Create an account with your email and password.
+            </li>
+
+            <li>
+              <strong>2. Login:</strong> Verify your credentials securely.
+            </li>
+
+            <li>
+              <strong>3. Token Generation:</strong> After login, a secure token (JWT) is issued.
+            </li>
+
+            <li>
+              <strong>4. Auto Session:</strong> The token is stored for seamless access to protected pages.
+            </li>
+
+            <li>
+              <strong>5. Protected Routes:</strong> Only authenticated users can view pages like Home, Products, About, and Contact.
+            </li>
+
+            <li>
+              <strong>6. Logout:</strong> Logging out removes the token and ends your session.
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );

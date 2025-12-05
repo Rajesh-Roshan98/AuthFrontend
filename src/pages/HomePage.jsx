@@ -1,35 +1,79 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/getUserDetail`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (response.data.success && response.data.user) {
+          setUser(response.data.user);
+        } else {
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Error fetching user details:", err);
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-lg font-medium text-gray-500">
+            Loading user data...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null; // extra safety
+
+  const fullName = `${user.firstName || ""} ${user.middleName ? user.middleName + " " : ""}${user.lastName || ""}`;
 
   return (
-  <div className="flex flex-col items-center justify-center h-full p-6 overflow-hidden">
-      <h1 className="text-3xl font-bold mb-4">Welcome to AuthApp 🎉</h1>
-      <p className="text-lg text-gray-700 mb-6 text-center max-w-xl">
-        This is the Home Page. It is visible to <span className="font-semibold text-indigo-600">all users</span>, 
-        whether logged in or not.
-      </p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
+      <h1 className="text-3xl font-bold mb-6">Welcome, {fullName} 👋</h1>
 
-      <div className="text-left mb-6 max-w-lg">
-        <h2 className="text-lg font-semibold mb-2">📝 How Login & Signup Works</h2>
-        <ul className="list-disc list-inside text-gray-600 space-y-2">
-          <li>
-            <span className="font-semibold">Signup:</span> New users can create an account by providing 
-            their details (like name, email, and password). Once signed up, your account is created in 
-            the system.
-          </li>
-          <li>
-            <span className="font-semibold">Login:</span> Existing users can log in using their email 
-            and password. After successful login, you’ll receive a secure token that allows you to 
-            access protected pages.
-          </li>
-          <li>
-            <span className="font-semibold">Logout:</span> You can log out anytime, which clears your 
-            session and takes you back to public pages.
-          </li>
-        </ul>
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md text-center space-y-3">
+        <p className="text-lg">
+          <span className="font-semibold text-indigo-600">Name:</span> {fullName}
+        </p>
+        <p className="text-lg">
+          <span className="font-semibold text-indigo-600">Email:</span> {user.email}
+        </p>
+        <p className="text-lg">
+          <span className="font-semibold text-indigo-600">Role:</span> {user.role}
+        </p>
       </div>
     </div>
   );
