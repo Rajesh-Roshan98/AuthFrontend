@@ -51,7 +51,7 @@ const Login = () => {
         // Optional: fetch user details
         let userData = null;
         try {
-          const userDetails = await axios.get(`${API_BASE}/api/v1/getUserDetail`, {
+          const userDetails = await axios.get(`${API_BASE}api/v1/getUserDetail`, {
             headers: { Authorization: `Bearer ${response.data.token}` }
           });
           if (userDetails.data.success) userData = userDetails.data.user;
