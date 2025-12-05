@@ -17,7 +17,7 @@ const HomePage = () => {
 
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/v1/getUserDetail`,
+          `${import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, "")}/api/v1/getUserDetail`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
