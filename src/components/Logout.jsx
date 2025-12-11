@@ -36,7 +36,7 @@ const Logout = ({ onLogout }) => {
       <button
         className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold px-6 py-2 rounded-xl shadow-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center"
         onClick={handleLogout}
-        disabled={loading} // Prevent multiple clicks
+        disabled={loading}
       >
         Logout
       </button>
