@@ -2,10 +2,25 @@
 
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a frontend authentication system built using React and Vite.  
+It provides a clean and secure user interface for login, registration, and protected navigation.
 
-Currently, two official plugins are available:
+The application uses a JWT-based authentication flow and is designed to be responsive and user-friendly.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
- 
+## Features
+
+- Login and Signup user interface  
+- JWT-based authentication handling  
+- Protected routes for authorized users  
+- Persistent login using browser storage  
+- Logout functionality with session cleanup  
+- Responsive design for desktop and mobile  
+
+## Tech Stack
+
+- React.js  
+- Vite  
+- React Router  
+- Tailwind CSS  
+- Axios / Fetch API  
+- JWT Authentication  
